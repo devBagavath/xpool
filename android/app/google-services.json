@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "913387648739",
+    "project_id": "xpool-abc9",
+    "storage_bucket": "xpool-abc9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:913387648739:android:f641c9faa7178d2bb8f7d6",
+        "android_client_info": {
+          "package_name": "com.xpool.xpool"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7l2L4U4zXfJfsNbpfH495OZm7JD_hiaQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
