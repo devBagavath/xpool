@@ -52,7 +52,7 @@ class _PlacePredictionTileDesignState extends State<PlacePredictionTileDesign> {
         userDropOffAddress = directions.locationName!;
       });
 
-      Navigator.pop(context, "obtainedDropoff");
+      Navigator.pop(context, "obtainedDropOff"); // Capital O
     }
   }
 
@@ -63,7 +63,9 @@ class _PlacePredictionTileDesignState extends State<PlacePredictionTileDesign> {
 
     return ElevatedButton(
       onPressed: () {
-        getPlaceDirectionDetails(widget.predictedPlaces!.place_id, context);
+        if (widget.predictedPlaces?.place_id != null) {
+          getPlaceDirectionDetails(widget.predictedPlaces!.place_id, context);
+        }
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: darkTheme ? Colors.black : Colors.white,

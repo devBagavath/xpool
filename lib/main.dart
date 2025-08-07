@@ -6,9 +6,10 @@ import 'package:xpool/splashScreen/splash_screen.dart';
 import 'package:xpool/themeprovider/theme_provider.dart';
 
 Future<void> main() async{
-  runApp(const MyApp());
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

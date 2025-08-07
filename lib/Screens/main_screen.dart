@@ -100,6 +100,29 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       tripDirectionDetailsInfo = directionDetailsInfo;
     });
+    setState(() {
+      // Clear previous
+      markersSet.clear();
+      routeDrawn = true;
+      // FROM Marker - Green
+      Marker fromMarker = Marker(
+        markerId: const MarkerId("fromID"),
+        position: originLatLng,
+        infoWindow: InfoWindow(title: "Pickup Location", snippet: originPosition.locationName),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+      );
+
+      // TO Marker - Red
+      Marker toMarker = Marker(
+        markerId: const MarkerId("toID"),
+        position: destinationLatLng,
+        infoWindow: InfoWindow(title: "Drop-off Location", snippet: destinationPosition.locationName),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      );
+
+      markersSet.add(fromMarker);
+      markersSet.add(toMarker);
+    });
 
     Navigator.pop(context);
 
@@ -118,7 +141,7 @@ class _MainScreenState extends State<MainScreen> {
 
     setState(() {
       Polyline polyline = Polyline(
-        color: darkTheme ? Colors.white: Colors.black,
+        color: darkTheme ? Colors.blue: Colors.black,
         polylineId: PolylineId("PolylineID"),
         jointType: JointType.round,
         points: pLineCoordinatedList,
@@ -187,6 +210,7 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     checkIfLocationPermissionAllowed();
   }
+  bool routeDrawn = false;
 
   @override
   Widget build(BuildContext context) {
@@ -281,19 +305,29 @@ class _MainScreenState extends State<MainScreen> {
                                 Padding(
                                   padding: EdgeInsets.all(5),
                                   child: GestureDetector(
-                                    onTap: ()  async {
-                                      //go to search places screen
-                                      var responseFromSearchScreen = await Navigator.push(context, MaterialPageRoute(builder: (c)=> SearchPlacesScreen()));
+                                    onTap: () async {
+                                      // go to search places screen
+                                      var responseFromSearchScreen = await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (c) => const SearchPlacesScreen()),
+                                      );
 
-                                      if (responseFromSearchScreen == "obtainedDropOff"){
+                                      if (responseFromSearchScreen == "obtainedDropOff") {
                                         setState(() {
                                           openNavigationDrawer = false;
                                         });
+
+                                        final pickup = Provider.of<AppInfo>(context, listen: false).userPickUpLocation;
+                                        final dropoff = Provider.of<AppInfo>(context, listen: false).userDropOffLocation;
+
+                                        if (pickup != null && dropoff != null) {
+                                          await drawPolyLineFromOriginToDestination(
+                                            Theme.of(context).brightness == Brightness.dark,
+                                          );
+                                        }
                                       }
-
-                                      await drawPolyLineFromOriginToDestination(darkTheme);
-
                                     },
+
                                     child: Row(
                                       children: [
                                         Icon(Icons.location_on_outlined, color: Theme.of(context).brightness == Brightness.dark ? Colors.red : Colors.red),

@@ -1,8 +1,10 @@
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xpool/Screens/forgot_password_screen.dart';
+import 'package:xpool/Screens/register_screen.dart';
 
 import '../global/gobal.dart';
 import 'main_screen.dart';
@@ -35,9 +37,31 @@ class _LoginScreenState extends State<LoginScreen> {
 
         await Fluttertoast.showToast(msg: "Successfully Logged In");
         Navigator.push(context, MaterialPageRoute(builder: (c) => MainScreen()));
-      }).catchError((errorMessage) {
-        Fluttertoast.showToast(msg: "Error occured: \n $errorMessage");
+      }).catchError((error) {
+        String errorMessage = "An error occurred";
+
+        if (error is FirebaseAuthException) {
+          switch (error.code) {
+            case "invalid-email":
+              errorMessage = "The email address is badly formatted.";
+              break;
+            case "user-not-found":
+              errorMessage = "No user found with this email.";
+              break;
+            case "wrong-password":
+              errorMessage = "Incorrect password.";
+              break;
+            case "user-disabled":
+              errorMessage = "This user account has been disabled.";
+              break;
+            default:
+              errorMessage = "Error: ${error.message}";
+          }
+        }
+
+        Fluttertoast.showToast(msg: errorMessage);
       });
+
     }
     else{
       Fluttertoast.showToast(msg: "Not al field are valid");
@@ -233,6 +257,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                 GestureDetector(
                                   onTap:(){
+                                    Navigator.push(context, MaterialPageRoute(builder: (c) => RegisterScreen()));
+
                                   },
                                   child: Text(
                                     "Register",
